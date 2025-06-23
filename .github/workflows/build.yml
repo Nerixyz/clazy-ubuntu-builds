@@ -36,7 +36,7 @@ jobs:
 
       - name: Prepare artifact
         run: |
-          cp clazy/build/ClazyClangTidy.so ClazyClangTidy19.so
+          cp clazy/build/lib/ClazyClangTidy.so ClazyClangTidy19.so
 
       - name: Update/add tag
         run: |
