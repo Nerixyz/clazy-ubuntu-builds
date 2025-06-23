@@ -13,15 +13,15 @@ jobs:
     container: ubuntu:24.04
 
     steps:
-      - name: Checkout workflow repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Install dependencies
         run: |
           apt-get update
           apt-get install -y git cmake ninja-build clang-19 libclang-19-dev llvm-19-dev
+
+      - name: Checkout workflow repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Clone Clazy repository
         run: |
@@ -42,8 +42,6 @@ jobs:
 
       - name: Update/add tag
         run: |
-          pwd
-          ls -lah
           git tag -f "clazy-$CLAZY_COMMIT"
           git push -f origin "clazy-$CLAZY_COMMIT"
 
