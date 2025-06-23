@@ -1,0 +1,56 @@
+name: Build and Release ClazyClangTidy19
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    # in line with https://github.com/ZedThree/clang-tidy-review/blob/master/Dockerfile
+    container: ubunut:24.04
+
+    steps:
+      - name: Checkout workflow repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git cmake ninja-build clang-19 libclang-19-dev llvm-19-dev
+
+      - name: Clone Clazy repository
+        run: |
+          git clone --depth 1 https://invent.kde.org/sdk/clazy.git
+          cd clazy
+          echo "CLAZY_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build Clazy with clang-19
+        run: |
+          cd clazy
+          mkdir build && cd build
+          cmake .. -GNinja -DCMAKE_C_COMPILER=clang-19 -DCMAKE_CXX_COMPILER=clang++-19
+          ninja
+
+      - name: Prepare artifact
+        run: |
+          cp clazy/build/ClazyClangTidy.so ClazyClangTidy19.so
+
+      - name: Update nightly-build tag
+        run: |
+          git tag -f "clazy-$CLAZY_COMMIT"
+          git push -f origin "clazy-$CLAZY_COMMIT"
+
+      - name: Create release
+        uses: ncipollo/release-action@v1.16.0
+        with:
+          replacesArtifacts: true
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          artifacts: ClazyClangTidy19.so
+          body: ${{ steps.format-changes.outputs.changelog }}
+          prerelease: true
+          name: Clazy ${{ env.CLAZY_COMMIT }}
+          tag: clazy-${{ env.CLAZY_COMMIT }}
