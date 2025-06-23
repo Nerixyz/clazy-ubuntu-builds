@@ -25,6 +25,7 @@ jobs:
 
       - name: Clone Clazy repository
         run: |
+          git config --global --add safe.directory "*"
           git clone --depth 1 https://invent.kde.org/sdk/clazy.git
           cd clazy
           echo "CLAZY_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
