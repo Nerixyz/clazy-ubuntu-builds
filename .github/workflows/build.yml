@@ -10,7 +10,7 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
     # in line with https://github.com/ZedThree/clang-tidy-review/blob/master/Dockerfile
-    container: ubunut:24.04
+    container: ubuntu:24.04
 
     steps:
       - name: Checkout workflow repository
