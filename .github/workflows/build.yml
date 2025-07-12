@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y git cmake ninja-build clang-19 libclang-19-dev llvm-19-dev
+          apt-get install -y git cmake ninja-build clang-19 libclang-19-dev llvm-19-dev zip
 
       - name: Checkout workflow repository
         uses: actions/checkout@v4
