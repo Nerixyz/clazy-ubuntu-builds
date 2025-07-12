@@ -40,6 +40,8 @@ jobs:
       - name: Prepare artifact
         run: |
           cp clazy/build/lib/ClazyClangTidy.so ClazyClangTidy19.so
+          cp clazy/build/lib/ClazyPlugin.so ClazyPlugin.so
+          zip -r clazy19.zip ClazyClangTidy19.so ClazyPlugin.so
 
       - name: Update/add tag
         run: |
@@ -52,7 +54,7 @@ jobs:
           replacesArtifacts: true
           allowUpdates: true
           artifactErrorsFailBuild: true
-          artifacts: ClazyClangTidy19.so
+          artifacts: clazy19.zip
           body: ${{ steps.format-changes.outputs.changelog }}
           prerelease: true
           name: Clazy ${{ env.CLAZY_COMMIT }}
